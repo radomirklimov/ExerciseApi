@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/organizer_db
+    username: postgres
+    password: changeit
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # auto-create/update tables
+    show-sql: true
+
+  properties:
+    hibernate:
+      format_sql: true
