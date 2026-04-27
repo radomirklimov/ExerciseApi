@@ -15,7 +15,7 @@ import jakarta.persistence.Table
 class CategoryEntity (
 
     @Id
-    @GeneratedValue(GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var categoryId: Long = 0,
 
     @Column
