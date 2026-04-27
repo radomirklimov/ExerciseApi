@@ -28,7 +28,4 @@ class ExerciseEntity (
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     var category: CategoryEntity? = null,
-
-    @ManyToMany(mappedBy = "exercises")
-    var workouts: MutableList<WorkoutEntity> = mutableListOf(),
 )
