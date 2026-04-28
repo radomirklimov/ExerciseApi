@@ -22,7 +22,8 @@ class ExerciseEntity (
     var name: String = "",
 
     @Column
-    var image: String = "",
+    //TODO: save full url after deploy e.g. http://api.com/images/pushup.png
+    var imageUrl: String = "",
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
