@@ -1,19 +1,14 @@
 package com.organizer.service
 
 import com.organizer.entity.ExerciseEntity
-import com.organizer.repository.ExerciseReposiroty
+import com.organizer.repository.ExerciseRepository
 import org.springframework.stereotype.Service
-import java.util.Optional
 
 @Service
 class ExerciseService(
-    private val exerciseReposiroty: ExerciseReposiroty,
+    private val exerciseRepository: ExerciseRepository,
 ) {
-   fun findAll(): MutableList<ExerciseEntity> {
-       return exerciseReposiroty.findAll()
+   fun findAll(): List<ExerciseEntity> {
+       return exerciseRepository.findAll()
    }
-
-    fun findById(id: Long): Optional<ExerciseEntity> {
-        return exerciseReposiroty.findById(id)
-    }
 }

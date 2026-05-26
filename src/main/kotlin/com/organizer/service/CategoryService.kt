@@ -1,19 +1,14 @@
 package com.organizer.service
 
 import com.organizer.entity.CategoryEntity
-import com.organizer.repository.CategoryReposiroty
+import com.organizer.repository.CategoryRepository
 import org.springframework.stereotype.Service
-import java.util.Optional
 
 @Service
 class CategoryService(
-    private val categoryReposiroty: CategoryReposiroty,
+    private val categoryRepository: CategoryRepository,
 ) {
-   fun findAll(): MutableList<CategoryEntity> {
-       return categoryReposiroty.findAll()
+   fun findAll(): List<CategoryEntity> {
+       return categoryRepository.findAll()
    }
-
-    fun findById(id: Long): Optional<CategoryEntity> {
-        return categoryReposiroty.findById(id)
-    }
 }
