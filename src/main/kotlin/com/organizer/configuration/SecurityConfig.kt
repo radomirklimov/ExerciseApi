@@ -11,7 +11,6 @@ import org.springframework.security.web.SecurityFilterChain
 class SecurityConfig {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        // Adjust security settings as needed
         return http
             .authorizeHttpRequests { auth ->
                 auth
