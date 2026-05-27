@@ -9,6 +9,9 @@ class WebConfig: WebMvcConfigurer {
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/images/**")
-            .addResourceLocations("file:images/")
+            .addResourceLocations("file:src/main/resources/static/images/")
+
+        registry.addResourceHandler("/icons**")
+            .addResourceLocations("file:src/main/resources/static/icons/")
     }
 }

@@ -23,6 +23,9 @@ class CategoryEntity (
     @Column
     var name: String = "",
 
+    @Column
+    var iconUrl: String = "",
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_category_id")
     var parentCategory: CategoryEntity? = null,
