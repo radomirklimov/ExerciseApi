@@ -17,12 +17,12 @@ class MainController(
     // returns all categories
     @GetMapping("/categories")
     fun getAllCategories(): ResponseEntity<List<CategoryEntity>> {
-        return ResponseEntity.ok().body(categoryService.findAll())
+        return ResponseEntity.ok().body(categoryService.findAll().sortedBy { it.categoryId })
     }
 
     // returns all exercises
     @GetMapping("/exercises")
     fun getAllExercises(): ResponseEntity<List<ExerciseEntity>> {
-        return ResponseEntity.ok().body(exerciseService.findAll())
+        return ResponseEntity.ok().body(exerciseService.findAll().sortedBy { it.exerciseId })
     }
 }

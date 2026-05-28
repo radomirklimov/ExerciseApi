@@ -18,13 +18,13 @@ class CategoryEntity (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var categoryId: Long = 0,
+    val categoryId: Long = 0,
 
     @Column
-    var name: String = "",
+    val name: String,
 
     @Column
-    var iconUrl: String = "",
+    var iconUrl: String? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_category_id")

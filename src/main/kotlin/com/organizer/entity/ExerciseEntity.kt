@@ -16,14 +16,14 @@ class ExerciseEntity (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var exerciseId: Long = 0,
+    val exerciseId: Long = 0,
 
     @Column
-    var name: String = "",
+    val name: String,
 
     @Column
     //TODO: save full url after deploy e.g. http://api.com/images/pushup.png
-    var imageUrl: String = "",
+    val imageUrl: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
