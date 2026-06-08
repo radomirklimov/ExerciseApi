@@ -1,0 +1,26 @@
+services:
+  app:
+    image: radomirklimov/exercise-organizer:latest
+    container_name: organizer-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/organizer
+      SPRING_DATASOURCE_USERNAME: organizer
+      SPRING_DATASOURCE_PASSWORD: secret
+  db:
+    image: postgres:16
+    container_name: organizer-db
+    environment:
+      POSTGRES_DB: organizer
+      POSTGRES_USER: organizer
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
