@@ -36,6 +36,16 @@ dependencies {
 	runtimeOnly(libs.postgresql)
 }
 
+tasks {
+	bootJar {
+		archiveFileName.set("organizer.jar")
+	}
+
+	jar {
+		enabled = false
+	}
+}
+
 springBoot {
 	buildInfo()
 }
