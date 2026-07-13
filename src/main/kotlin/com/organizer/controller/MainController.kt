@@ -13,11 +13,16 @@ class MainController(
     private val categoryService: CategoryService,
     private val exerciseService: ExerciseService,
 ) {
+    // returns all sports
+    @GetMapping("/sports")
+    fun getAllSports(): ResponseEntity<List<CategoryEntity>> {
+        return ResponseEntity.ok().body(categoryService.findAllSports().sortedBy { it.categoryId })
+    }
 
-    // returns all categories
+    // returns all categories except sports
     @GetMapping("/categories")
     fun getAllCategories(): ResponseEntity<List<CategoryEntity>> {
-        return ResponseEntity.ok().body(categoryService.findAll().sortedBy { it.categoryId })
+        return ResponseEntity.ok().body(categoryService.findAllCategories().sortedBy { it.categoryId })
     }
 
     // returns all exercises

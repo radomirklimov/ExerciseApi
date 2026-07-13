@@ -8,7 +8,11 @@ import org.springframework.stereotype.Service
 class CategoryService(
     private val categoryRepository: CategoryRepository,
 ) {
-   fun findAll(): List<CategoryEntity> {
-       return categoryRepository.findAll()
+    fun findAllSports(): List<CategoryEntity> {
+        return categoryRepository.findAllSports()
+    }
+
+   fun findAllCategories(): List<CategoryEntity> {
+       return categoryRepository.findAllCategories()
    }
 }
