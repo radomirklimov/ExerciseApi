@@ -19,7 +19,7 @@ class MainController(
         return ResponseEntity.ok().body(categoryService.findAllSports().sortedBy { it.categoryId })
     }
 
-    // returns all categories except sports
+    // returns all non-sports categories
     @GetMapping("/categories")
     fun getAllCategories(): ResponseEntity<List<CategoryEntity>> {
         return ResponseEntity.ok().body(categoryService.findAllCategories().sortedBy { it.categoryId })

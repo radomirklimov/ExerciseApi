@@ -22,6 +22,9 @@ class ExerciseEntity (
     val name: String,
 
     @Column
+    val instruction: String,
+
+    @Column
     //TODO: save full url after deploy e.g. http://api.com/images/pushup.png
     val imageUrl: String,
 
