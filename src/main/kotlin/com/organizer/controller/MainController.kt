@@ -27,7 +27,7 @@ class MainController(
 
     // returns all exercises
     @GetMapping("/exercises")
-    fun getAllExercises(): ResponseEntity<List<ExerciseResponse>> {
-        return ResponseEntity.ok().body(exerciseService.findAll())
+    fun getAllExercises(): List<ExerciseResponse> {
+        return exerciseService.findAll()
     }
 }

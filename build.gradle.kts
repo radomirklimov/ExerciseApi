@@ -27,6 +27,7 @@ dependencies {
 	implementation(libs.springdoc.openapi.starter.webmvc.ui)
 	implementation(libs.kotlin.reflect)
 	implementation(libs.jackson.kotlin)
+	implementation(libs.spring.boot.starter.cache)
 	implementation(libs.kotlin.logging)
 	testImplementation(libs.spring.boot.starter.actuator.test)
 	testImplementation(libs.spring.boot.starter.data.jpa.test)

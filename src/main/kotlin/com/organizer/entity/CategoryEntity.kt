@@ -21,7 +21,7 @@ class CategoryEntity (
     val name: String,
 
     @Column
-    var iconUrl: String? = null,
+    val iconUrl: String? = null,
 
     @Column(name = "parent_category_id")
     val parentCategoryId: Long?
