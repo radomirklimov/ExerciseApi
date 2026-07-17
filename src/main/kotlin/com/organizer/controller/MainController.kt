@@ -1,7 +1,7 @@
 package com.organizer.controller
 
-import com.organizer.entity.CategoryEntity
-import com.organizer.entity.ExerciseEntity
+import com.organizer.dto.CategoryResponse
+import com.organizer.dto.ExerciseResponse
 import com.organizer.service.CategoryService
 import com.organizer.service.ExerciseService
 import org.springframework.http.ResponseEntity
@@ -15,19 +15,19 @@ class MainController(
 ) {
     // returns all sports
     @GetMapping("/sports")
-    fun getAllSports(): ResponseEntity<List<CategoryEntity>> {
-        return ResponseEntity.ok().body(categoryService.findAllSports().sortedBy { it.categoryId })
+    fun getAllSports(): ResponseEntity<List<CategoryResponse>> {
+        return ResponseEntity.ok().body(categoryService.findAllSports())
     }
 
     // returns all non-sports categories
     @GetMapping("/categories")
-    fun getAllCategories(): ResponseEntity<List<CategoryEntity>> {
-        return ResponseEntity.ok().body(categoryService.findAllCategories().sortedBy { it.categoryId })
+    fun getAllCategories(): ResponseEntity<List<CategoryResponse>> {
+        return ResponseEntity.ok().body(categoryService.findAllCategories())
     }
 
     // returns all exercises
     @GetMapping("/exercises")
-    fun getAllExercises(): ResponseEntity<List<ExerciseEntity>> {
-        return ResponseEntity.ok().body(exerciseService.findAll().sortedBy { it.exerciseId })
+    fun getAllExercises(): List<ExerciseResponse> {
+        return exerciseService.findAll()
     }
 }

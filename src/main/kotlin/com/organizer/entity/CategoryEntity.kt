@@ -3,12 +3,9 @@ package com.organizer.entity
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 
 @Entity
@@ -24,9 +21,8 @@ class CategoryEntity (
     val name: String,
 
     @Column
-    var iconUrl: String? = null,
+    val iconUrl: String? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_category_id")
-    var parentCategory: CategoryEntity? = null,
+    @Column(name = "parent_category_id")
+    val parentCategoryId: Long?
 )

@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository
 @Repository
 interface CategoryRepository: CrudRepository<CategoryEntity, Long>  {
 
-    @Query("SELECT c FROM CategoryEntity c WHERE c.iconUrl IS NOT NULL AND c.parentCategory IS NULL")
+    @Query("SELECT c FROM CategoryEntity c WHERE c.iconUrl IS NOT NULL AND c.parentCategoryId IS NULL ORDER BY c.categoryId ASC")
     fun findAllSports(): List<CategoryEntity>
 
-    @Query("SELECT c FROM CategoryEntity c WHERE c.parentCategory IS  NOT NULL")
+    @Query("SELECT c FROM CategoryEntity c WHERE c.parentCategoryId IS  NOT NULL ORDER BY c.categoryId ASC")
     fun findAllCategories(): List<CategoryEntity>
 }

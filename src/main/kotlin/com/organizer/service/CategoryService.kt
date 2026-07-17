@@ -1,18 +1,22 @@
 package com.organizer.service
 
-import com.organizer.entity.CategoryEntity
+import com.organizer.dto.CategoryResponse
+import com.organizer.mapper.toResponse
 import com.organizer.repository.CategoryRepository
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
 @Service
 class CategoryService(
     private val categoryRepository: CategoryRepository,
 ) {
-    fun findAllSports(): List<CategoryEntity> {
-        return categoryRepository.findAllSports()
-    }
+    @Cacheable("sports")
+    fun findAllSports(): List<CategoryResponse> =
+        categoryRepository.findAllSports()
+            .map { it.toResponse() }
 
-   fun findAllCategories(): List<CategoryEntity> {
-       return categoryRepository.findAllCategories()
-   }
+    @Cacheable("categories")
+    fun findAllCategories(): List<CategoryResponse> =
+        categoryRepository.findAllCategories()
+            .map { it.toResponse() }
 }

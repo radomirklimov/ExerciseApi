@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ExerciseRepository: CrudRepository<ExerciseEntity, Long>  {
+interface ExerciseRepository : CrudRepository<ExerciseEntity, Long> {
 
-    override fun findAll(): List<ExerciseEntity>
+    fun findAllByOrderByExerciseIdAsc(): List<ExerciseEntity>
 }
