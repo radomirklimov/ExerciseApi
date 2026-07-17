@@ -24,3 +24,8 @@ services:
 
 volumes:
   pgdata:
+
+# build an image
+# docker build -t radomirklimov/exercise-organizer:latest .
+# push it to docker hub
+# docker push radomirklimov/exercise-organizer:latest
