@@ -2,12 +2,9 @@ package com.organizer.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 
 @Entity
@@ -21,14 +18,12 @@ class ExerciseEntity (
     @Column
     val name: String,
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     val instruction: String,
 
     @Column
-    //TODO: save full url after deploy e.g. http://api.com/images/pushup.png
     val imageUrl: String,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    var category: CategoryEntity? = null,
+    @Column(name = "category_id")
+    val categoryId: Long?
 )

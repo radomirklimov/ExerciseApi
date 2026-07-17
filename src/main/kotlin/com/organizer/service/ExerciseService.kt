@@ -1,6 +1,7 @@
 package com.organizer.service
 
-import com.organizer.entity.ExerciseEntity
+import com.organizer.dto.ExerciseResponse
+import com.organizer.mapper.toResponse
 import com.organizer.repository.ExerciseRepository
 import org.springframework.stereotype.Service
 
@@ -8,7 +9,8 @@ import org.springframework.stereotype.Service
 class ExerciseService(
     private val exerciseRepository: ExerciseRepository,
 ) {
-   fun findAll(): List<ExerciseEntity> {
-       return exerciseRepository.findAll()
-   }
+    fun findAll(): List<ExerciseResponse> {
+        return exerciseRepository.findAll()
+            .map { it.toResponse() }
+    }
 }

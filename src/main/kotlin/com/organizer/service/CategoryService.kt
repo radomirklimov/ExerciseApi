@@ -1,6 +1,7 @@
 package com.organizer.service
 
-import com.organizer.entity.CategoryEntity
+import com.organizer.dto.CategoryResponse
+import com.organizer.mapper.toResponse
 import com.organizer.repository.CategoryRepository
 import org.springframework.stereotype.Service
 
@@ -8,11 +9,11 @@ import org.springframework.stereotype.Service
 class CategoryService(
     private val categoryRepository: CategoryRepository,
 ) {
-    fun findAllSports(): List<CategoryEntity> {
-        return categoryRepository.findAllSports()
-    }
+    fun findAllSports(): List<CategoryResponse> =
+        categoryRepository.findAllSports()
+            .map { it.toResponse() }
 
-   fun findAllCategories(): List<CategoryEntity> {
-       return categoryRepository.findAllCategories()
-   }
+    fun findAllCategories(): List<CategoryResponse> =
+        categoryRepository.findAllCategories()
+            .map { it.toResponse() }
 }
