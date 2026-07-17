@@ -10,7 +10,7 @@ class ExerciseService(
     private val exerciseRepository: ExerciseRepository,
 ) {
     fun findAll(): List<ExerciseResponse> {
-        return exerciseRepository.findAll()
+        return exerciseRepository.findAllByOrderByExerciseIdAsc()
             .map { it.toResponse() }
     }
 }

@@ -16,18 +16,18 @@ class MainController(
     // returns all sports
     @GetMapping("/sports")
     fun getAllSports(): ResponseEntity<List<CategoryResponse>> {
-        return ResponseEntity.ok().body(categoryService.findAllSports().sortedBy { it.categoryId })
+        return ResponseEntity.ok().body(categoryService.findAllSports())
     }
 
     // returns all non-sports categories
     @GetMapping("/categories")
     fun getAllCategories(): ResponseEntity<List<CategoryResponse>> {
-        return ResponseEntity.ok().body(categoryService.findAllCategories().sortedBy { it.categoryId })
+        return ResponseEntity.ok().body(categoryService.findAllCategories())
     }
 
     // returns all exercises
     @GetMapping("/exercises")
     fun getAllExercises(): ResponseEntity<List<ExerciseResponse>> {
-        return ResponseEntity.ok().body(exerciseService.findAll().sortedBy { it.exerciseId })
+        return ResponseEntity.ok().body(exerciseService.findAll())
     }
 }
