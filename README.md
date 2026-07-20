@@ -91,3 +91,24 @@ Contains business logic and converts database entities into API DTOs.
 
 **Repository Layer** <br>
 Database access is handled using Spring Data JPA.
+
+---
+
+# Android Application
+
+The **Exercise Organizer Android application** is a native mobile app built with Kotlin and Jetpack Compose.
+
+The application provides an offline-first experience by synchronizing data from the backend API, storing it locally with Room, and allowing users to manage their personal exercise collections without an internet connection.
+
+The Android project is available at the following link - https://github.com/radomirklimov/ExerciseOrganizerApp
+
+---
+
+## License
+
+Copyright © 2026 Radomir Klimov.
+
+All rights reserved.
+
+This project is available for viewing and portfolio evaluation purposes only.
+Reuse, redistribution, or commercial use requires explicit permission.
