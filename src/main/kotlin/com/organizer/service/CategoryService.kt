@@ -8,15 +8,15 @@ import org.springframework.stereotype.Service
 
 @Service
 class CategoryService(
-    private val categoryRepository: CategoryRepository,
+    private val categoryRepo: CategoryRepository,
 ) {
     @Cacheable("sports")
     fun findAllSports(): List<CategoryResponse> =
-        categoryRepository.findAllSports()
+        categoryRepo.findAllSports()
             .map { it.toResponse() }
 
     @Cacheable("categories")
     fun findAllCategories(): List<CategoryResponse> =
-        categoryRepository.findAllCategories()
+        categoryRepo.findAllCategories()
             .map { it.toResponse() }
 }
