@@ -5,5 +5,4 @@ data class ExerciseResponse(
     val name: String,
     val instruction: String,
     val imageUrl: String,
-    val categoryId: Long?
 )

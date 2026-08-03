@@ -15,15 +15,12 @@ class ExerciseEntity (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val exerciseId: Long = 0,
 
-    @Column
+    @Column(nullable = false)
     val name: String,
 
     @Column(columnDefinition = "TEXT")
     val instruction: String,
 
-    @Column
+    @Column(name = "image_url")
     val imageUrl: String,
-
-    @Column(name = "category_id")
-    val categoryId: Long?
 )

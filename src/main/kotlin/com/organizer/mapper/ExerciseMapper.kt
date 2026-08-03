@@ -8,5 +8,4 @@ fun ExerciseEntity.toResponse() = ExerciseResponse(
     name = name,
     instruction = instruction,
     imageUrl = imageUrl,
-    categoryId = categoryId
 )

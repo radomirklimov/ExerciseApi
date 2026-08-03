@@ -8,12 +8,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class ExerciseService(
-    private val exerciseRepository: ExerciseRepository,
+    private val exerciseRepo: ExerciseRepository,
 ) {
-
-    @Cacheable("exercises")
     fun findAll(): List<ExerciseResponse> {
-        return exerciseRepository.findAllByOrderByExerciseIdAsc()
+        return exerciseRepo.findAllByOrderByExerciseIdAsc()
             .map { it.toResponse() }
     }
 }

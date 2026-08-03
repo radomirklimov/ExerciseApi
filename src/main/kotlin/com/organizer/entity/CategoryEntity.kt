@@ -17,10 +17,10 @@ class CategoryEntity (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val categoryId: Long = 0,
 
-    @Column
+    @Column(nullable = false)
     val name: String,
 
-    @Column
+    @Column(name = "icon_url")
     val iconUrl: String? = null,
 
     @Column(name = "parent_category_id")
