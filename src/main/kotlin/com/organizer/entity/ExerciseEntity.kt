@@ -27,7 +27,7 @@ class ExerciseEntity(
         orphanRemoval = true
     )
     @OrderBy("position ASC")
-    val instructions: List<ExerciseInstructionEntity> = mutableListOf(),
+    val instructions: MutableSet<ExerciseInstructionEntity> = linkedSetOf(),
 
     @OneToMany(
         mappedBy = "exercise",
@@ -35,5 +35,5 @@ class ExerciseEntity(
         orphanRemoval = true
     )
     @OrderBy("position ASC")
-    val images: List<ExerciseImageEntity> = mutableListOf()
+    val images: MutableSet<ExerciseImageEntity> = linkedSetOf()
 )
