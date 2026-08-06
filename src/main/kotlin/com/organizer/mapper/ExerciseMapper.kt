@@ -1,8 +1,6 @@
 package com.organizer.mapper
 
 import com.organizer.dto.ExerciseResponse
-import com.organizer.dto.ImageResponse
-import com.organizer.dto.InstructionResponse
 import com.organizer.entity.ExerciseEntity
 
 fun ExerciseEntity.toResponse() =
@@ -11,18 +9,8 @@ fun ExerciseEntity.toResponse() =
         name = name,
         instructions = instructions
             .sortedBy { it.position }
-            .map {
-                InstructionResponse(
-                    text = it.text,
-                    position = it.position
-                )
-            },
+            .map { it.text },
         images = images
             .sortedBy { it.position }
-            .map {
-                ImageResponse(
-                    imageUrl = it.imageUrl,
-                    position = it.position
-                )
-            }
+            .map { it.imageUrl }
     )
