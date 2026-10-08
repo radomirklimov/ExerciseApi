@@ -8,6 +8,7 @@ import com.organizer.service.ExerciseCategoryService
 import com.organizer.service.ExerciseService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -28,10 +29,14 @@ class MainController(
         return ResponseEntity.ok().body(categoryService.findAllCategories())
     }
 
-    // returns all exercises
+    // returns one page of exercises, e.g. /exercises?page=0&size=20
+    // keep requesting next page until the list comes back empty
     @GetMapping("/exercises")
-    fun getAllExercises(): List<ExerciseResponse> {
-        return exerciseService.findAll()
+    fun getAllExercises(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") size: Int,
+    ): List<ExerciseResponse> {
+        return exerciseService.findAll(page, size)
     }
 
     // return relationships of exercises and categories
