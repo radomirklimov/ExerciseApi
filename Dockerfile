@@ -9,8 +9,8 @@ RUN ./gradlew dependencies --no-daemon -q || true
 COPY src src
 RUN ./gradlew bootJar --no-daemon -x test
 
-# ---- Runtime stage (pinned minor, JRE only) ----
-FROM eclipse-temurin:21.0-jre-jammy
+# ---- Runtime stage (LTS major pinned, JRE only) ----
+FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 RUN addgroup --system app && adduser --system --ingroup app app
 COPY --from=build /app/build/libs/*.jar app.jar
