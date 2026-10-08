@@ -36,5 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
+# Local secrets (never commit real DB credentials)
+.env
+
 ### Kotlin ###
 .kotlin

@@ -4,8 +4,10 @@ import com.organizer.dto.CategoryResponse
 import com.organizer.mapper.toResponse
 import com.organizer.repository.CategoryRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class CategoryService(
     private val categoryRepo: CategoryRepository,
 ) {
