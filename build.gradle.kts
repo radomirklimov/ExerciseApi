@@ -26,7 +26,6 @@ dependencies {
 	implementation(libs.springdoc.openapi.starter.webmvc.ui)
 	implementation(libs.kotlin.reflect)
 	implementation(libs.jackson.kotlin)
-	implementation(libs.spring.boot.starter.cache)
 	implementation(libs.spring.boot.starter.flyway)
 	implementation(libs.flyway.database.postgresql)
 	implementation(libs.kotlin.logging)

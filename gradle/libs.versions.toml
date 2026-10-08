@@ -15,7 +15,6 @@ spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-start
 springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "openapi-ui" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin" }
-spring-boot-starter-cache = { module = "org.springframework.boot:spring-boot-starter-cache" }
 spring-boot-starter-flyway = { module = "org.springframework.boot:spring-boot-starter-flyway" }
 flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql" }
 
