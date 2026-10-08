@@ -28,6 +28,8 @@ dependencies {
 	implementation(libs.kotlin.reflect)
 	implementation(libs.jackson.kotlin)
 	implementation(libs.spring.boot.starter.cache)
+	implementation(libs.spring.boot.starter.flyway)
+	implementation(libs.flyway.database.postgresql)
 	implementation(libs.kotlin.logging)
 	testImplementation(libs.spring.boot.starter.actuator.test)
 	testImplementation(libs.spring.boot.starter.data.jpa.test)
