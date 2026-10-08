@@ -23,7 +23,6 @@ dependencies {
 	implementation(libs.spring.boot.starter.actuator)
 	implementation(libs.spring.boot.starter.data.jpa)
 	implementation(libs.spring.boot.starter.web)
-	implementation(libs.spring.boot.starter.security)
 	implementation(libs.springdoc.openapi.starter.webmvc.ui)
 	implementation(libs.kotlin.reflect)
 	implementation(libs.jackson.kotlin)
