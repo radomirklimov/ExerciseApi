@@ -13,7 +13,7 @@ Built with **Kotlin, Spring Boot, PostgreSQL and JPA**
 **http://localhost:8080/swagger-ui/index.html** - Swagger UI <br>
 **http://localhost:8080/v3/api-docs** - OpenAPI specification
 
-**GET /sports** - Returns top-level sport categories. <br>
+**GET /api/v1/sports** - Returns top-level sport categories. <br>
 Example response:
 ```
 [
@@ -26,7 +26,7 @@ Example response:
 ]
 ```
 
-**GET /categories** - Returns child(non-sport) categories. <br>
+**GET /api/v1/categories** - Returns child(non-sport) categories. <br>
 Example response:
 ```
 [
@@ -39,15 +39,28 @@ Example response:
 ]
 ```
 
-**GET /exercises** - Returns available exercises. <br>
+**GET /api/v1/exercises?page=0&size=20** - Returns one page of exercises
+(plain JSON array, `page`/`size` optional, `size` max 100).
+Keep requesting the next page until `[]`. <br>
 Example response:
 ```
 [
   {
     "exerciseId": 1,
     "name": "Push Up",
-    "instruction": "1. Place hands shoulder width apart 2. Lower you body...",
-    "imageUrl": "pushup.png",
+    "instructions": ["Place hands shoulder width apart", "Lower your body"],
+    "images": ["pushup.png"]
+  }
+]
+```
+
+**GET /api/v1/exercise-category** - Returns exercise-category links. <br>
+Example response:
+```
+[
+  {
+    "exerciseCategoryId": 5,
+    "exerciseId": 1,
     "categoryId": 12
   }
 ]
@@ -82,9 +95,10 @@ Controller > Service > Repository > Database
 - Returning API responses
 
 Available endpoints: <br>
-GET /sports <br>
-GET /categories <br>
-GET /exercises
+GET /api/v1/sports <br>
+GET /api/v1/categories <br>
+GET /api/v1/exercises?page=0&size=20 <br>
+GET /api/v1/exercise-category
 
 **Service Layer** <br>
 Contains business logic and converts database entities into API DTOs.

@@ -6,8 +6,10 @@ import com.organizer.repository.ExerciseRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class ExerciseService(
     private val exerciseRepo: ExerciseRepository,
 ) {

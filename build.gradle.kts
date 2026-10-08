@@ -28,12 +28,12 @@ dependencies {
 	implementation(libs.jackson.kotlin)
 	implementation(libs.spring.boot.starter.flyway)
 	implementation(libs.flyway.database.postgresql)
-	implementation(libs.kotlin.logging)
 	testImplementation(libs.spring.boot.starter.actuator.test)
 	testImplementation(libs.spring.boot.starter.data.jpa.test)
 	testImplementation(libs.spring.boot.starter.webmvc.test)
 	testImplementation(libs.kotlin.test.junit5)
 	testRuntimeOnly(libs.junit.platform.launcher)
+	testRuntimeOnly(libs.h2)
 	runtimeOnly(libs.postgresql)
 }
 
