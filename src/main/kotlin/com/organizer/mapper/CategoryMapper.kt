@@ -7,5 +7,6 @@ fun CategoryEntity.toResponse() = CategoryResponse(
     categoryId = categoryId,
     name = name,
     iconUrl = iconUrl,
-    parentCategoryId = parent?.categoryId
+    parentCategoryId = parent?.categoryId,
+    sortOrder = sortOrder,
 )

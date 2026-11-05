@@ -12,7 +12,7 @@ class ExerciseCategoryService(
     private val exerciseCategoryRepo: ExerciseCategoryRepository
 ) {
     fun findAll(): List<ExerciseCategoryResponse> {
-        return exerciseCategoryRepo.findAllByOrderByExerciseCategoryIdAsc()
+        return exerciseCategoryRepo.findAllInDisplayOrder()
             .map { it.toResponse() }
     }
 }

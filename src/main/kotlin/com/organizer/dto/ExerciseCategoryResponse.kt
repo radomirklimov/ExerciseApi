@@ -4,4 +4,5 @@ data class ExerciseCategoryResponse(
     val exerciseCategoryId: Long,
     val exerciseId: Long,
     val categoryId: Long,
+    val sortOrder: Int,
 )

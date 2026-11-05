@@ -32,4 +32,7 @@ class ExerciseCategoryEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     val category: CategoryEntity,
+
+    @Column(name = "sort_order", nullable = false)
+    val sortOrder: Int = 0,
 )
