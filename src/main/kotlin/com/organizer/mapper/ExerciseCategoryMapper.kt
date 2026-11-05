@@ -7,5 +7,6 @@ fun ExerciseCategoryEntity.toResponse() =
     ExerciseCategoryResponse(
         exerciseCategoryId = exerciseCategoryId,
         exerciseId = exercise.exerciseId,
-        categoryId = category.categoryId
+        categoryId = category.categoryId,
+        sortOrder = sortOrder,
     )

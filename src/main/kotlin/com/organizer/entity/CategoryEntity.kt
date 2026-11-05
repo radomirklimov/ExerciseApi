@@ -28,5 +28,8 @@ class CategoryEntity (
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_category_id")
-    val parent: CategoryEntity?
+    val parent: CategoryEntity?,
+
+    @Column(name = "sort_order", nullable = false)
+    val sortOrder: Int = 0,
 )
