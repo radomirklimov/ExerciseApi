@@ -9,11 +9,11 @@ fun ExerciseEntity.toResponse() =
         name = name,
         instructions = instructions.map { it.text },
         images = images.map { it.imageUrl },
-        exerciseType = classifyExerciseType(name),
+        exerciseType = exerciseType,
     )
 
-fun classifyExerciseType(name: String): String {
-    val lower = name.lowercase()
+fun classifyExerciseType(name: String?): String {
+    val lower = name?.lowercase() ?: ""
     return when {
         lower.contains("plank") || lower.contains("hold") ||
             lower.contains("wall sit") || lower.contains("dead hang") ||

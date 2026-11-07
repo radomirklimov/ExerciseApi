@@ -1,5 +1,6 @@
 package com.organizer.entity
 
+import com.organizer.mapper.classifyExerciseType
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -21,6 +22,8 @@ class ExerciseEntity(
     @Column(nullable = false)
     val name: String,
 
+    exerciseType: String? = null,
+
     @OneToMany(
         mappedBy = "exercise",
         cascade = [CascadeType.ALL],
@@ -36,4 +39,8 @@ class ExerciseEntity(
     )
     @OrderBy("position ASC")
     val images: MutableSet<ExerciseImageEntity> = linkedSetOf()
-)
+) {
+
+    @field:Column(name = "exercise_type", nullable = false)
+    val exerciseType: String = exerciseType?.takeIf { it.isNotBlank() } ?: classifyExerciseType(name)
+}
