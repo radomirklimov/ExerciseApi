@@ -1,0 +1,8 @@
+package com.organizer.entity
+
+typealias StarterWorkoutEntity = WorkoutEntity
+typealias StarterWorkoutExerciseEntity = WorkoutExerciseEntity
+typealias WorkoutTemplateEntity = WorkoutEntity
+typealias WorkoutTemplateExerciseEntity = WorkoutExerciseEntity
+typealias StarterTemplateEntity = WorkoutEntity
+typealias StarterTemplateExerciseEntity = WorkoutExerciseEntity
