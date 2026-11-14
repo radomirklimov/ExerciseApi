@@ -7,6 +7,7 @@ import com.organizer.entity.ExerciseInstructionEntity
 import com.organizer.entity.WorkoutEntity
 import com.organizer.entity.WorkoutExerciseEntity
 import com.organizer.repository.CategoryRepository
+import com.organizer.repository.ExerciseCategoryRepository
 import com.organizer.repository.ExerciseRepository
 import com.organizer.repository.WorkoutRepository
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -24,11 +25,13 @@ class StarterWorkoutControllerTest(
     @Autowired val mockMvc: MockMvc,
     @Autowired val categoryRepo: CategoryRepository,
     @Autowired val exerciseRepo: ExerciseRepository,
+    @Autowired val exerciseCategoryRepo: ExerciseCategoryRepository,
     @Autowired val workoutRepo: WorkoutRepository,
 ) {
     @BeforeEach
     fun seed() {
         workoutRepo.deleteAll()
+        exerciseCategoryRepo.deleteAll()
         exerciseRepo.deleteAll()
         categoryRepo.deleteAll()
 
@@ -64,7 +67,7 @@ class StarterWorkoutControllerTest(
 
     @Test
     fun `starter workout relationships are persisted`() {
-        val workouts = workoutRepo.findAll()
+        val workouts = workoutRepo.findAllStarterWithDetails()
         assertEquals(1, workouts.size)
         assertEquals(1, workouts.first().exercises.size)
     }
