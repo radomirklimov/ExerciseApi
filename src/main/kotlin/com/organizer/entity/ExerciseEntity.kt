@@ -44,3 +44,4 @@ class ExerciseEntity(
     @field:Column(name = "exercise_type", nullable = false)
     val exerciseType: String = exerciseType?.takeIf { it.isNotBlank() } ?: classifyExerciseType(name)
 }
+

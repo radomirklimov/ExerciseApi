@@ -1,0 +1,9 @@
+package com.organizer.repository
+
+import com.organizer.entity.WorkoutEntity
+import com.organizer.entity.WorkoutExerciseEntity
+
+typealias StarterWorkoutRepository = WorkoutRepository
+typealias StarterWorkoutExerciseRepository = WorkoutExerciseRepository
+typealias WorkoutTemplateRepository = WorkoutRepository
+typealias WorkoutTemplateExerciseRepository = WorkoutExerciseRepository

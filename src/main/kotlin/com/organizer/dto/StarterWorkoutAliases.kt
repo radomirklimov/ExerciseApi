@@ -1,0 +1,8 @@
+package com.organizer.dto
+
+typealias StarterWorkoutResponse = WorkoutResponse
+typealias StarterWorkoutExerciseResponse = WorkoutExerciseResponse
+typealias WorkoutTemplateResponse = WorkoutResponse
+typealias WorkoutTemplateExerciseResponse = WorkoutExerciseResponse
+typealias StarterTemplateResponse = WorkoutResponse
+typealias StarterTemplateExerciseResponse = WorkoutExerciseResponse
