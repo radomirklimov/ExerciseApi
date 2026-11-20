@@ -4,7 +4,7 @@ spring-boot = "4.0.5"
 dependency-management = "1.1.7"
 # Used for swqgger-ui
 openapi-ui = "3.0.3"
-
+firebase-admin = "9.4.3"
 
 [libraries]
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
@@ -15,6 +15,8 @@ kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin" }
 spring-boot-starter-flyway = { module = "org.springframework.boot:spring-boot-starter-flyway" }
 flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql" }
+firebase-admin = { module = "com.google.firebase:firebase-admin", version.ref = "firebase-admin" }
+spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
 
 spring-boot-starter-actuator-test = { module = "org.springframework.boot:spring-boot-starter-actuator-test" }
 spring-boot-starter-data-jpa-test = { module = "org.springframework.boot:spring-boot-starter-data-jpa-test" }
@@ -31,3 +33,5 @@ kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref 
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 dependency-management = { id = "io.spring.dependency-management", version.ref = "dependency-management" }
 kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
+
+# added versions
