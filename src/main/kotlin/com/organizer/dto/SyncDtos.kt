@@ -1,35 +1,55 @@
 package com.organizer.dto
 
-import com.fasterxml.jackson.databind.JsonNode
 import java.time.Instant
 
-data class SyncRecordRequest(
+data class SyncMutationRequest(
+    val mutationId: String,
     val entityType: String,
-    val clientId: String,
-    val payload: JsonNode? = null,
-    val updatedAt: Instant? = null,
-    val deleted: Boolean = false,
-)
-
-data class SyncRecordResponse(
-    val entityType: String,
-    val clientId: String,
-    val payload: JsonNode? = null,
-    val updatedAt: Instant,
-    val deleted: Boolean,
-    val version: Long,
+    val syncId: String,
+    val operation: String,
+    val baseVersion: Long,
+    val clientUpdatedAt: Instant? = null,
+    val payload: Map<String, Any>? = null,
 )
 
 data class SyncPushRequest(
-    val records: List<SyncRecordRequest> = emptyList(),
+    val mutations: List<SyncMutationRequest> = emptyList(),
+)
+
+data class SyncMutationResult(
+    val mutationId: String,
+    val syncId: String,
+    val status: String,
+    val errorCode: String? = null,
+    val errorMessage: String? = null,
+    val serverVersion: Long? = null,
+    val serverUpdatedAt: Instant? = null,
+    val deleted: Boolean = false,
+    val serverPayload: Map<String, Any>? = null,
 )
 
 data class SyncPushResponse(
-    val records: List<SyncRecordResponse>,
+    val results: List<SyncMutationResult>,
     val serverTime: Instant,
 )
 
+data class SyncChangeRecord(
+    val entityType: String,
+    val syncId: String,
+    val serverVersion: Long,
+    val serverUpdatedAt: Instant,
+    val deleted: Boolean,
+    val payload: Map<String, Any>?,
+)
+
 data class SyncChangesResponse(
-    val records: List<SyncRecordResponse>,
+    val records: List<SyncChangeRecord>,
+    val nextCursor: String,
+    val hasMore: Boolean,
     val serverTime: Instant,
+)
+
+data class ApiError(
+    val error: String,
+    val message: String,
 )

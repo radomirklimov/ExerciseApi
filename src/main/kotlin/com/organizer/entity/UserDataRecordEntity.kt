@@ -15,7 +15,8 @@ import java.util.UUID
 @Table(
     name = "user_data_record",
     uniqueConstraints = [
-        UniqueConstraint(columnNames = ["user_id", "entity_type", "client_id"])
+        UniqueConstraint(columnNames = ["user_id", "entity_type", "client_id"]),
+        UniqueConstraint(columnNames = ["user_id", "entity_type", "sync_id"])
     ]
 )
 class UserDataRecordEntity(

@@ -3,9 +3,10 @@ package com.organizer.config
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 
 @Configuration
 class JacksonConfig {
     @Bean
-    fun objectMapper(): ObjectMapper = ObjectMapper().findAndRegisterModules()
+    fun objectMapper(): ObjectMapper = Jackson2ObjectMapperBuilder.json().build()
 }

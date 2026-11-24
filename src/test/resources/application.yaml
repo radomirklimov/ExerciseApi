@@ -10,3 +10,6 @@ spring:
     show-sql: false
   flyway:
     enabled: false
+
+sync:
+  cursor-secret: "test-only-sync-cursor-secret-please-change-me-1234"

@@ -10,4 +10,9 @@ import java.util.UUID
 interface SyncChangeLogRepository : JpaRepository<SyncChangeLogEntity, UUID> {
     fun findAllByUserOrderBySequenceAsc(user: UserEntity): List<SyncChangeLogEntity>
     fun findFirstByUserOrderBySequenceDesc(user: UserEntity): SyncChangeLogEntity?
+    fun findByUserAndSequenceGreaterThanAndSequenceLessThanEqualOrderBySequenceAsc(
+        user: UserEntity,
+        fromSequence: Long,
+        toSequence: Long,
+    ): List<SyncChangeLogEntity>
 }
