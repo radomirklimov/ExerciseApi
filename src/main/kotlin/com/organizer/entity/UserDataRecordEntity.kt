@@ -33,6 +33,18 @@ class UserDataRecordEntity(
     @Column(name = "client_id", nullable = false, length = 128)
     val clientId: String,
 
+    @Column(name = "sync_id", length = 128)
+    var syncId: String? = null,
+
+    @Column(name = "client_updated_at")
+    var clientUpdatedAt: Instant? = null,
+
+    @Column(name = "server_updated_at")
+    var serverUpdatedAt: Instant? = null,
+
+    @Column(name = "last_mutation_id", length = 128)
+    var lastMutationId: String? = null,
+
     @Column(name = "payload", columnDefinition = "TEXT")
     var payload: String? = null,
 

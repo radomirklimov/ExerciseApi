@@ -50,6 +50,9 @@ class SyncService(
                     user = user,
                     entityType = incoming.entityType,
                     clientId = incoming.clientId,
+                    syncId = incoming.clientId,
+                    clientUpdatedAt = incomingUpdated,
+                    serverUpdatedAt = now,
                     payload = incoming.payload?.toString(),
                     createdAt = now,
                     updatedAt = incomingUpdated,
@@ -63,6 +66,8 @@ class SyncService(
                 if (incomingUpdated.isAfter(existing.updatedAt) || incomingUpdated == existing.updatedAt) {
                     existing.payload = incoming.payload?.toString() ?: existing.payload
                     existing.updatedAt = incomingUpdated
+                    existing.clientUpdatedAt = incomingUpdated
+                    existing.serverUpdatedAt = now
                     existing.deletedAt = if (incoming.deleted) incomingUpdated else existing.deletedAt
                     existing.version = existing.version + 1
                     val saved = recordRepository.save(existing)
