@@ -74,23 +74,35 @@ class SyncCursorCodec(secret: String) {
         return "${b64(payload.toByteArray(StandardCharsets.UTF_8))}.${b64(mac)}"
     }
 
-    fun decodeAndVerify(value: String, expectedUserScope: String): SyncCursor? {
+    fun decodeAndVerify(value: String, expectedUserScope: String): CursorDecodeResult {
         val parts = value.split(".")
-        if (parts.size != 2) return null
-        val payload = String(Base64.getUrlDecoder().decode(parts[0]), StandardCharsets.UTF_8)
-        val expectedMac = hmac(payload)
-        if (!MessageDigest.isEqual(expectedMac, Base64.getUrlDecoder().decode(parts[1]))) return null
+        if (parts.size != 2) return CursorDecodeResult.Invalid
+        val payload = runCatching { String(Base64.getUrlDecoder().decode(parts[0]), StandardCharsets.UTF_8) }
+            .getOrNull() ?: return CursorDecodeResult.Invalid
+        val suppliedMac = runCatching { Base64.getUrlDecoder().decode(parts[1]) }
+            .getOrNull() ?: return CursorDecodeResult.Invalid
+        if (!MessageDigest.isEqual(hmac(payload), suppliedMac)) return CursorDecodeResult.Invalid
 
         val fields = payload.split("|")
-        if (fields.size != 5 || fields[0] != VERSION) return null
-        if (fields[1] != expectedUserScope) return null
+        if (fields.size != 5 || fields[0] != VERSION) return CursorDecodeResult.Invalid
+        if (fields[1] != expectedUserScope) return CursorDecodeResult.Invalid
 
-        val lastSequence = fields[2].toLongOrNull() ?: return null
-        val highWaterMark = if (fields[3] == "-") null else fields[3].toLongOrNull() ?: return null
-        val expiresAt = fields[4].toLongOrNull() ?: return null
-        if (expiresAt < System.currentTimeMillis() / 1000) return null
+        val lastSequence = fields[2].toLongOrNull() ?: return CursorDecodeResult.Invalid
+        val highWaterMark = if (fields[3] == "-") null else fields[3].toLongOrNull() ?: return CursorDecodeResult.Invalid
+        val expiresAt = fields[4].toLongOrNull() ?: return CursorDecodeResult.Invalid
 
-        return SyncCursor(expectedUserScope, lastSequence, highWaterMark, expiresAt)
+        // An internally inconsistent cursor is invalid regardless of expiry.
+        // The service still validates cursors whose high-water mark is null,
+        // since that bound is derived from the current change log there.
+        if (highWaterMark != null && lastSequence > highWaterMark) return CursorDecodeResult.Invalid
+
+        // Only a structurally valid, correctly signed, user-bound cursor whose
+        // sole defect is expiry receives the distinct expiry outcome.
+        if (expiresAt < System.currentTimeMillis() / 1000) return CursorDecodeResult.Expired
+
+        return CursorDecodeResult.Valid(
+            SyncCursor(expectedUserScope, lastSequence, highWaterMark, expiresAt)
+        )
     }
 
     private fun hmac(payload: String): ByteArray =
@@ -101,6 +113,12 @@ class SyncCursorCodec(secret: String) {
     companion object {
         private const val VERSION = "v1"
     }
+}
+
+sealed interface CursorDecodeResult {
+    data class Valid(val cursor: SyncCursor) : CursorDecodeResult
+    object Expired : CursorDecodeResult
+    object Invalid : CursorDecodeResult
 }
 
 data class SyncCursor(

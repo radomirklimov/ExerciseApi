@@ -53,6 +53,8 @@ Response:
 
 The cursor is an HMAC-signed, user-bound, expiring (24 h) base64url value containing the last consumed sequence and, while a snapshot is being paged, its high-water mark. Once the snapshot is consumed, the high-water mark is released so later writes are visible on the next sync.
 
+If a correctly signed, user-bound, structurally valid cursor is rejected solely because its 24 h expiry has passed, `/api/sync/changes` responds `400` with `error: "CURSOR_EXPIRED"`. Clients may clear that cursor and retry once from `cursor = null`. Malformed, tampered, foreign-user and out-of-range cursors keep `error: "INVALID_REQUEST"` and must not be silently reset.
+
 ## Supported entity types
 `WORKOUT`, `CUSTOM_EXERCISE`, `WORKOUT_EXERCISE`, `EXERCISE_PROGRESS`, `PLANNED_SET`, `WORKOUT_COMPLETION`, `SCHEDULED_WORKOUT`, `FAVORITE_EXERCISE`.
 

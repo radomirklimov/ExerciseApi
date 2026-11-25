@@ -3,6 +3,7 @@ package com.organizer.controller
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.firebase.auth.FirebaseToken
+import com.organizer.dto.ApiError
 import com.organizer.dto.SyncChangesResponse
 import com.organizer.dto.SyncMutationRequest
 import com.organizer.dto.SyncPushRequest
@@ -13,9 +14,12 @@ import com.organizer.repository.UserDataRecordRepository
 import com.organizer.repository.UserRepository
 import com.organizer.repository.UserSyncSequenceRepository
 import com.organizer.security.FirebaseTokenVerifier
+import com.organizer.sync.SyncCursor
+import com.organizer.sync.SyncCursorCodec
 import com.organizer.sync.SyncLimits
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -111,6 +115,14 @@ class SyncApiIntegrationTest(
             if (cursor != null) param("cursor", cursor)
         }.andExpect { status { isOk() } }.andReturn()
         return objectMapper.readValue(result.response.contentAsString, SyncChangesResponse::class.java)
+    }
+
+    private fun cursorError(cursor: String, uid: String = "uid-a"): ApiError {
+        val result = mockMvc.get("/api/sync/changes") {
+            header("Authorization", auth(uid))
+            param("cursor", cursor)
+        }.andExpect { status { isBadRequest() } }.andReturn()
+        return objectMapper.readValue(result.response.contentAsString, ApiError::class.java)
     }
 
     @Test
@@ -261,11 +273,65 @@ class SyncApiIntegrationTest(
             header("Authorization", auth("uid-b"))
             param("cursor", foreignCursor)
         }.andExpect { status { isBadRequest() } }
+        org.junit.jupiter.api.Assertions.assertNotEquals(
+            "CURSOR_EXPIRED", cursorError(foreignCursor, "uid-b").error
+        )
 
         mockMvc.get("/api/sync/changes") {
             header("Authorization", auth("uid-a"))
             param("cursor", "not-a-cursor")
         }.andExpect { status { isBadRequest() } }
+        org.junit.jupiter.api.Assertions.assertNotEquals(
+            "CURSOR_EXPIRED", cursorError("not-a-cursor").error
+        )
+    }
+
+    @Test
+    fun `valid cursor continues pagination and expired cursor is distinguished`() {
+        repeat(2) { push("uid-a", mutation(entityType = "WORKOUT")) }
+        val first = pull("uid-a", null, 1)
+        assertTrue(first.hasMore)
+        val second = pull("uid-a", first.nextCursor, 1)
+        assertEquals(1, second.records.size)
+
+        val codec = SyncCursorCodec("test-only-sync-cursor-secret-please-change-me-1234")
+        val userScope = userRepository.findByFirebaseUid("uid-a")!!.id.toString()
+        val expired = codec.encode(
+            SyncCursor(userScope, 0, null, System.currentTimeMillis() / 1000 - 60)
+        )
+        val error = cursorError(expired)
+        assertEquals("CURSOR_EXPIRED", error.error)
+        assertEquals("Sync cursor expired", error.message)
+    }
+
+    @Test
+    fun `tampered and out-of-range cursors never return the expiry code`() {
+        push("uid-a", mutation())
+        val valid = pull("uid-a").nextCursor
+        val tampered = valid.replace(valid.last(), if (valid.last() == 'A') 'B' else 'A')
+        assertEquals("INVALID_REQUEST", cursorError(tampered).error)
+
+        val codec = SyncCursorCodec("test-only-sync-cursor-secret-please-change-me-1234")
+        val userScope = userRepository.findByFirebaseUid("uid-a")!!.id.toString()
+        val outOfRange = codec.encode(
+            SyncCursor(userScope, 999_999L, null, System.currentTimeMillis() / 1000 + 60)
+        )
+        assertEquals("INVALID_REQUEST", cursorError(outOfRange).error)
+    }
+
+    @Test
+    fun `expired cursor with an internally out-of-range position stays generic`() {
+        pull("uid-a") // ensure the authenticated user and its scope exist
+        val codec = SyncCursorCodec("test-only-sync-cursor-secret-please-change-me-1234")
+        val userScope = userRepository.findByFirebaseUid("uid-a")!!.id.toString()
+        val expiredAndOutOfRange = codec.encode(
+            SyncCursor(userScope, 10L, 5L, System.currentTimeMillis() / 1000 - 60)
+        )
+
+        val error = cursorError(expiredAndOutOfRange)
+
+        assertEquals("INVALID_REQUEST", error.error)
+        assertNotEquals("CURSOR_EXPIRED", error.error)
     }
 
     @Test

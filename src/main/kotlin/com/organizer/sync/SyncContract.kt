@@ -29,6 +29,7 @@ object SyncStatus {
 
 object SyncErrorCode {
     const val INVALID_REQUEST = "INVALID_REQUEST"
+    const val CURSOR_EXPIRED = "CURSOR_EXPIRED"
     const val INVALID_ENTITY_TYPE = "INVALID_ENTITY_TYPE"
     const val INVALID_SYNC_ID = "INVALID_SYNC_ID"
     const val INVALID_MUTATION_ID = "INVALID_MUTATION_ID"

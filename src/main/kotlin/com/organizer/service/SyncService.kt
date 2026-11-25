@@ -10,6 +10,7 @@ import com.organizer.dto.SyncPushResponse
 import com.organizer.entity.UserEntity
 import com.organizer.repository.SyncChangeLogRepository
 import com.organizer.repository.UserDataRecordRepository
+import com.organizer.sync.CursorDecodeResult
 import com.organizer.sync.SyncCanonicalizer
 import com.organizer.sync.SyncCursor
 import com.organizer.sync.SyncCursorCodec
@@ -86,8 +87,15 @@ class SyncService(
         val cursor = if (cursorValue.isNullOrBlank()) {
             SyncCursor(userScope, 0, null, now.epochSecond + SyncLimits.CURSOR_TTL_SECONDS)
         } else {
-            cursorCodec.decodeAndVerify(cursorValue, userScope)
-                ?: throw SyncRequestException(SyncErrorCode.INVALID_REQUEST, "Invalid or expired cursor")
+            when (val decoded = cursorCodec.decodeAndVerify(cursorValue, userScope)) {
+                is CursorDecodeResult.Valid -> decoded.cursor
+                CursorDecodeResult.Expired -> throw SyncRequestException(
+                    SyncErrorCode.CURSOR_EXPIRED, "Sync cursor expired"
+                )
+                CursorDecodeResult.Invalid -> throw SyncRequestException(
+                    SyncErrorCode.INVALID_REQUEST, "Invalid cursor"
+                )
+            }
         }
 
         val highWaterMark = cursor.highWaterMark
