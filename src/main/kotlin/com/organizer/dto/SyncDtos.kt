@@ -26,6 +26,8 @@ data class SyncMutationResult(
     val serverUpdatedAt: Instant? = null,
     val deleted: Boolean = false,
     val serverPayload: Map<String, Any>? = null,
+    /** Present only on DUPLICATE: the outcome stored in the original receipt. */
+    val originalStatus: String? = null,
 )
 
 data class SyncPushResponse(

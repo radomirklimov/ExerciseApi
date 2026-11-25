@@ -23,11 +23,11 @@ All endpoints require `Authorization: Bearer <Firebase ID token>`. The applicati
 
 `operation` is `UPSERT`, `DELETE`, or `RESTORE`. `DELETE` for a new record requires a payload; `RESTORE` always requires a payload.
 
-Response results contain `mutationId`, `syncId`, `status` (`APPLIED`, `CONFLICT`, `DUPLICATE`, `REJECTED`), `serverVersion`, `serverUpdatedAt`, `deleted`, and `serverPayload` on conflict.
+Response results contain `mutationId`, `syncId`, `status` (`APPLIED`, `CONFLICT`, `DUPLICATE`, `REJECTED`), `serverVersion`, `serverUpdatedAt`, `deleted`, and `serverPayload` on conflict. `DUPLICATE` responses additionally carry `originalStatus`, the status stored in the original receipt (`APPLIED`, `CONFLICT`, or `REJECTED`). Clients predating this field treat a duplicate as a successful replay.
 
 Each mutation is processed in its own transaction. A `sync_mutation_receipt` keyed by `(user_id, mutation_id)` makes retries idempotent. The request hash is computed from canonical JSON (object keys sorted recursively).
 
-When a mutation ID is retried with the same canonical request, the stored original result is replayed with only `status` changed to `DUPLICATE` (all other fields are unchanged). Android may treat both `APPLIED` and `DUPLICATE` as successful acknowledgement of an outbox entry.
+When a mutation ID is retried with the same canonical request, the stored original result is replayed with `status` changed to `DUPLICATE` and `originalStatus` set to the original status (all other fields are unchanged). A duplicate of an `APPLIED` mutation is acknowledged; a duplicate whose `originalStatus` is `CONFLICT` or `REJECTED` must keep the local mutation blocking. If `originalStatus` is absent (legacy server), the duplicate is treated as a successful replay for backward compatibility.
 
 ## GET /api/sync/changes?cursor=...&limit=100
 

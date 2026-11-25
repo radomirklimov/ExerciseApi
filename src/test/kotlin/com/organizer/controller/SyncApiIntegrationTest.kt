@@ -146,6 +146,7 @@ class SyncApiIntegrationTest(
 
         val duplicate = push("uid-a", m).results.single()
         assertEquals("DUPLICATE", duplicate.status)
+        assertEquals("APPLIED", duplicate.originalStatus)
         assertEquals(first.serverVersion, duplicate.serverVersion)
         assertEquals(before, changeLogRepository.findAllByUserOrderBySequenceAsc(userRepository.findByFirebaseUid("uid-a")!!).size)
 
@@ -189,9 +190,26 @@ class SyncApiIntegrationTest(
 
         assertEquals("CONFLICT", first.status)
         assertEquals("DUPLICATE", duplicate.status)
+        assertEquals("CONFLICT", duplicate.originalStatus)
         assertEquals(first.errorCode, duplicate.errorCode)
         assertEquals(first.serverVersion, duplicate.serverVersion)
         assertEquals(first.serverPayload, duplicate.serverPayload)
+    }
+
+    @Test
+    fun `duplicate rejection replays REJECTED outcome with originalStatus`() {
+        // DELETE of a record that does not exist and has no payload is a
+        // receipted, apply-level rejection.
+        val m = mutation(operation = "DELETE", payload = null)
+        val first = push("uid-a", m).results.single()
+        assertEquals("REJECTED", first.status)
+        assertEquals("PAYLOAD_REQUIRED", first.errorCode)
+
+        val duplicate = push("uid-a", m).results.single()
+        assertEquals("DUPLICATE", duplicate.status)
+        assertEquals("REJECTED", duplicate.originalStatus)
+        assertEquals("PAYLOAD_REQUIRED", duplicate.errorCode)
+        assertEquals(first.errorMessage, duplicate.errorMessage)
     }
 
     @Test

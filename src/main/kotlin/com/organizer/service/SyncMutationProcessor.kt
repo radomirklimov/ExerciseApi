@@ -61,7 +61,12 @@ class SyncMutationProcessor(
                 return rejected(mutation, SyncErrorCode.MUTATION_ID_REUSE, "Mutation ID was used with a different request")
             }
             val original = objectMapper.readValue(existingReceipt.responseJson, SyncMutationResult::class.java)
-            return original.copy(status = SyncStatus.DUPLICATE)
+            // DUPLICATE is only a replay marker. The stored outcome travels with
+            // it so clients cannot mistake a replayed failure for an ack.
+            return original.copy(
+                status = SyncStatus.DUPLICATE,
+                originalStatus = original.status,
+            )
         }
 
         val result = applyMutation(user, mutation)
