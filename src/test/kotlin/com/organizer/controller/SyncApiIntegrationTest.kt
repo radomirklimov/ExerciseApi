@@ -388,4 +388,57 @@ class SyncApiIntegrationTest(
         assertTrue(pull("uid-b").records.none { it.syncId == m.syncId })
         assertTrue(pull("uid-a").records.any { it.syncId == m.syncId })
     }
+
+    @Test
+    fun `favorite initial adds converge without version increment`() {
+        val syncId = UUID.randomUUID().toString()
+        val ref = mapOf("kind" to "PUBLIC", "exerciseId" to 42)
+        val m1 = mutation(mutationId = UUID.randomUUID().toString(), syncId = syncId, entityType = "FAVORITE_EXERCISE", payload = mapOf("schemaVersion" to 1, "exerciseRef" to ref, "addedAt" to Instant.now().toString()))
+        val m2 = mutation(mutationId = UUID.randomUUID().toString(), syncId = syncId, entityType = "FAVORITE_EXERCISE", payload = mapOf("schemaVersion" to 1, "exerciseRef" to ref, "addedAt" to Instant.now().toString()))
+
+        val r1 = push("uid-a", m1).results.single()
+        val r2 = push("uid-a", m2).results.single()
+
+        assertEquals("APPLIED", r1.status)
+        assertEquals("APPLIED", r2.status)
+        assertEquals(r1.serverVersion, r2.serverVersion)
+        assertEquals(1L, r1.serverVersion)
+
+        // replay m2 returns DUPLICATE with original APPLIED
+        val replay = push("uid-a", m2).results.single()
+        assertEquals("DUPLICATE", replay.status)
+        assertEquals("APPLIED", replay.originalStatus)
+
+        // sequence advanced only once
+        assertEquals(1L, sequenceRepository.findAll().first().nextSequence - 1)
+    }
+
+    @Test
+    fun `favorite mismatched ref remains conflict`() {
+        val syncId = UUID.randomUUID().toString()
+        val m1 = mutation(mutationId = UUID.randomUUID().toString(), syncId = syncId, entityType = "FAVORITE_EXERCISE", payload = mapOf("schemaVersion" to 1, "exerciseRef" to mapOf("kind" to "PUBLIC", "exerciseId" to 42), "addedAt" to Instant.now().toString()))
+        val m2 = mutation(mutationId = UUID.randomUUID().toString(), syncId = syncId, entityType = "FAVORITE_EXERCISE", baseVersion = 0, payload = mapOf("schemaVersion" to 1, "exerciseRef" to mapOf("kind" to "PUBLIC", "exerciseId" to 7), "addedAt" to Instant.now().toString()))
+
+        push("uid-a", m1)
+        val r2 = push("uid-a", m2).results.single()
+        assertEquals("CONFLICT", r2.status)
+    }
+
+    @Test
+    fun `favorite stale upsert does not resurrect deleted`() {
+        val syncId = UUID.randomUUID().toString()
+        val ref = mapOf("kind" to "PUBLIC", "exerciseId" to 42)
+        val mAdd = mutation(mutationId = UUID.randomUUID().toString(), syncId = syncId, entityType = "FAVORITE_EXERCISE", payload = mapOf("schemaVersion" to 1, "exerciseRef" to ref, "addedAt" to Instant.now().toString()))
+        val rAdd = push("uid-a", mAdd).results.single()
+        assertEquals("APPLIED", rAdd.status)
+
+        val mDel = mutation(mutationId = UUID.randomUUID().toString(), syncId = syncId, entityType = "FAVORITE_EXERCISE", operation = "DELETE", baseVersion = rAdd.serverVersion!!, payload = mapOf("schemaVersion" to 1, "exerciseRef" to ref, "addedAt" to Instant.now().toString()))
+        val rDel = push("uid-a", mDel).results.single()
+        assertEquals("APPLIED", rDel.status)
+        assertTrue(rDel.deleted)
+
+        val mStale = mutation(mutationId = UUID.randomUUID().toString(), syncId = syncId, entityType = "FAVORITE_EXERCISE", baseVersion = 0, payload = mapOf("schemaVersion" to 1, "exerciseRef" to ref, "addedAt" to Instant.now().toString()))
+        val rStale = push("uid-a", mStale).results.single()
+        assertEquals("REJECTED", rStale.status)
+    }
 }

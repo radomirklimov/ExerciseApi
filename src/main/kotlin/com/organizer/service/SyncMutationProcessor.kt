@@ -69,6 +69,8 @@ class SyncMutationProcessor(
             )
         }
 
+        val convergedNoOp = isFavoriteConvergenceNoOp(user, mutation)
+
         val result = applyMutation(user, mutation)
         val responseJson = objectMapper.writeValueAsString(result)
         receiptRepository.saveAndFlush(
@@ -80,7 +82,7 @@ class SyncMutationProcessor(
             )
         )
 
-        if (result.status == SyncStatus.APPLIED) {
+        if (result.status == SyncStatus.APPLIED && !convergedNoOp) {
             val sequenceValue = sequence.nextSequence
             sequence.nextSequence = sequenceValue + 1
             sequenceRepository.save(sequence)
@@ -122,6 +124,17 @@ class SyncMutationProcessor(
                         SyncErrorCode.RECORD_DELETED,
                         "Deleted record cannot be updated with UPSERT; use RESTORE"
                     )
+                }
+                // Narrow convergence rule for FAVORITE_EXERCISE: two devices can send
+                // different mutationIds for the same deterministic syncId with
+                // baseVersion=0. Accept the second initial add as an idempotent
+                // no-op when the tagged exercise reference matches exactly.
+                if (mutation.entityType == "FAVORITE_EXERCISE" &&
+                    mutation.baseVersion == 0L &&
+                    canonicalExerciseRef(mutation.payload) != null &&
+                    canonicalExerciseRef(mutation.payload) == canonicalExerciseRef(existing.payload)
+                ) {
+                    return applied(mutation, existing, existing.serverUpdatedAt ?: now)
                 }
                 if (mutation.baseVersion != existing.version) {
                     return conflict(mutation, existing)
@@ -180,6 +193,49 @@ class SyncMutationProcessor(
                 val saved = recordRepository.saveAndFlush(existing)
                 return applied(mutation, saved, now)
             }
+        }
+    }
+
+    private fun isFavoriteConvergenceNoOp(user: UserEntity, mutation: SyncMutationRequest): Boolean {
+        if (mutation.entityType != "FAVORITE_EXERCISE" || mutation.operation != "UPSERT" || mutation.baseVersion != 0L) {
+            return false
+        }
+        val existing = recordRepository.findByUserAndEntityTypeAndSyncId(user, mutation.entityType, mutation.syncId) ?: return false
+        if (existing.deletedAt != null) return false
+        val incomingRef = canonicalExerciseRef(mutation.payload) ?: return false
+        val storedRef = canonicalExerciseRef(existing.payload) ?: return false
+        return incomingRef == storedRef
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun canonicalExerciseRef(payload: Any?): String? {
+        val root: Map<*, *>? = when (payload) {
+            is Map<*, *> -> payload
+            is String -> runCatching { objectMapper.readValue(payload, Map::class.java) as? Map<*, *> }.getOrNull()
+            else -> null
+        }
+        val ref = root?.get("exerciseRef") as? Map<*, *> ?: return null
+        val kind = (ref["kind"] as? String)?.uppercase() ?: return null
+        return when (kind) {
+            "PUBLIC" -> {
+                val raw = ref["exerciseId"]
+                val id = when (raw) {
+                    is Number -> {
+                        val d = raw.toDouble()
+                        if (d != d.toLong().toDouble() || d <= 0) return null
+                        d.toLong()
+                    }
+                    is String -> raw.trim().toLongOrNull()?.takeIf { it > 0 } ?: return null
+                    else -> return null
+                }
+                "PUBLIC:$id"
+            }
+            "CUSTOM" -> {
+                val sid = ref["syncId"] as? String ?: return null
+                if (runCatching { java.util.UUID.fromString(sid.trim()) }.isFailure) return null
+                "CUSTOM:${sid.trim()}"
+            }
+            else -> null
         }
     }
 
